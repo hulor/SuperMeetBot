@@ -24,6 +24,11 @@ const AddSpeakerHelper = (Message, Speaker) =>
 	if (!Speaker)
 		Speaker = Message.member;
 	Message.react('✔️').catch(()=> Message.error("Failed to react"));
+	const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
+	Message.awaitReactions(ReactionFilter, {max:1}).then(collected =>
+	{
+		StopSpeakingHelper(Message.guild, Message.member);
+	})
 	Setters.Add(Message.guild, Speaker);
 	if (Speaker == Getters.GetCurrentSpeaker(Message.guild))
 		Speaker.voice.setMute(false);
