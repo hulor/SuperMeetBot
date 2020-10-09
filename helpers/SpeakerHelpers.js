@@ -11,11 +11,11 @@ const DisplaySpeakerList = (Guild) =>
 		text += "No speaker for the moment.";
 		return (text);
 	}
-	text += "Currently speaking: " + Getters.GetCurrentSpeaker(Guild).user.username + "\n";
+	text += "Currently speaking: <@" + Getters.GetCurrentSpeaker(Guild).user.id + ">\n";
 	text += "Next speakers :\n";
 
 	for (const Speaker of Getters.GetAllSpeakers(Guild))
-		text += "@" + Speaker.user.username + "\n";
+		text += "<@" + Speaker.user.id + ">\n";
 	return (text);
 };
 
