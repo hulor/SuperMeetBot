@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { Setters } = require('../state/SpeakerState.js');
+const { Setters } = require('../../state/SpeakerState.js');
 
 exports.default = class Clear extends Command
 {

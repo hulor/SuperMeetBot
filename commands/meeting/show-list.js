@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
-const { DisplaySpeakerList } = require('../helpers/SpeakerHelpers.js');
-const { Getters } = require('../state/SpeakerState.js')
+const { DisplaySpeakerList } = require('../../helpers/SpeakerHelpers.js');
+const { Getters } = require('../../state/SpeakerState.js')
 
 class ShowList extends Command
 {

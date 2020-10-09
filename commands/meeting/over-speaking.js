@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { Setters, Getters } = require('../state/SpeakerState.js');
+const { Setters, Getters } = require('../../state/SpeakerState.js');
 
 exports.default = class OverSpeaking extends Command
 {
