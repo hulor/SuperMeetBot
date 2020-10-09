@@ -22,6 +22,9 @@ Client.registry.registerDefaultTypes().registerGroup("meeting", "Meeting command
 
 Client.on("message", message =>
 {
+	// private message
+	if (message.guild == null)
+		return;
 	if (Getters.IsMeetingActive(message.guild) == false ||
 		message.channel != Getters.GetTextChannel(message.guild))
 		return;
