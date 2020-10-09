@@ -29,7 +29,31 @@ const AddSpeakerHelper = (Message, Speaker) =>
 		Speaker.voice.setMute(false);
 }
 
+const StopSpeakingHelper = (Guild, Speaker) =>
+{
+	const PreviousTalker = Getters.GetCurrentSpeaker(Guild);
+	// there is no more meeting or we ask to finish the talking turn to someone else, that's bad, really bad.
+	if (Getters.IsMeetingActive(Guild) == false ||
+		PreviousTalker != Speaker)
+		return;
+	// in case the previous talker has left the meeting.
+	if (PreviousTalker.voice != null)
+		PreviousTalker.voice.setMute(true);
+
+	const NewSpeaker = Setters.PopNextSpeaker(Guild);
+	if (NewSpeaker != null)
+	{
+		NewSpeaker.voice.setMute(false);
+		Getters.GetTextChannel(Guild).send("It's your turn <@" + NewSpeaker.user.id + ">.");
+	}
+	else
+	{
+		Getters.GetTextChannel(Guild).send("No one wants to talk? You can ask to talk with ~AddSpeaker or raising your hand.");
+	}
+}
+
 module.exports = {
 	DisplaySpeakerList,
 	AddSpeakerHelper,
+	StopSpeakingHelper,
 };
