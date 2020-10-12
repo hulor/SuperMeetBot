@@ -50,6 +50,13 @@ const Setters =
 		return MeetingState.CurrentSpeaker;
 	},
 
+	RemoveSpeakerFromWaitList(Guild, Speaker)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		const Index = MeetingState.NextSpeakers.indexOf(Speaker);
+		MeetingState.NextSpeakers.splice(Index, 1);
+	},
+
 	Clear(Guild)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);

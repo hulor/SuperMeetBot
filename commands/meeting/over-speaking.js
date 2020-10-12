@@ -21,8 +21,8 @@ exports.default = class OverSpeaking extends Command
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
 			return (Message.reply("There is no meeting."));
-		if (Getters.GetCurrentSpeaker(Message.guild) != Message.member)
-			return (Message.reply("lol."));
+
+		Message.react('✔️').catch(()=> Message.error("Failed to react"));
 		return (StopSpeakingHelper(Message.guild, Message.member));
 	}
 }

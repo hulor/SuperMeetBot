@@ -40,13 +40,24 @@ const AddSpeakerOnMessageHelper = (Message, Speaker) =>
 	AddSpeakerHelper(Message.guild, Speaker);
 }
 
+const SpeakerIsWaiting = (Guild, Speaker) =>
+{
+	const AllSpeakers = Getters.GetAllSpeakers(Guild);
+	return (AllSpeakers.indexOf(Speaker) != -1);
+}
+
 const StopSpeakingHelper = (Guild, Speaker) =>
 {
 	const PreviousTalker = Getters.GetCurrentSpeaker(Guild);
 	// there is no more meeting or we ask to finish the talking turn to someone else, that's bad, really bad.
-	if (Getters.IsMeetingActive(Guild) == false ||
-		PreviousTalker != Speaker)
+	if (Getters.IsMeetingActive(Guild) == false)
 		return;
+	if (PreviousTalker != Speaker &&
+		SpeakerIsWaiting(Guild, Speaker))
+	{
+		Setters.RemoveSpeakerFromWaitList(Guild, Speaker);
+		return;
+	}
 	// in case the previous talker has left the meeting.
 	if (PreviousTalker.voice != null)
 		PreviousTalker.voice.setMute(true);
@@ -65,6 +76,7 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 
 module.exports = {
 	DisplaySpeakerList,
+	SpeakerIsWaiting,
 	AddSpeakerHelper,
 	AddSpeakerOnMessageHelper,
 	StopSpeakingHelper,
