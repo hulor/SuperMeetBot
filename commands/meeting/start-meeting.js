@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
+const { AddSpeakerHelper, StopSpeakingHelper } = require("../../helpers/SpeakerHelpers.js")
 
 exports.default = class StartMeeting extends Command
 {
@@ -46,6 +47,14 @@ exports.default = class StartMeeting extends Command
 			if (CurrentSpeaker == null || Member != CurrentSpeaker)
 				Member.voice.setMute(true);
 		}
-		return (Message.reply(`Starting a meeting in ${VoiceChannel.name}.`));
+		Getters.GetTextChannel(Message.guild).send(`Starting a meeting in ${VoiceChannel.name}.`).then(
+		Message => {
+			const Filter = (reaction, user) => true;
+			const Collector = Message.createReactionCollector(Filter, {});
+			Collector.options.dispose = true;
+			Collector.on('collect', (reaction, user) => { AddSpeakerHelper(reaction.message.guild, reaction.message.guild.member(user)); }); // on receive a reaction
+			Collector.on('remove', (reaction, user) => { StopSpeakingHelper(reaction.message.guild, reaction.message.guild.member(user)); }); // on remove a reaction
+			Setters.SetStartMeetingCollector(Message.guild, Collector);
+		}).catch(console.log('failed to await for start meeting message.'));
 	}
 };

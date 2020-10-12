@@ -66,7 +66,15 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 	if (NewSpeaker != null)
 	{
 		NewSpeaker.voice.setMute(false);
-		Getters.GetTextChannel(Guild).send("It's your turn <@" + NewSpeaker.user.id + ">.");
+		const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
+		// timeout set at 1h, max 1 reaction.
+		Getters.GetTextChannel(Guild).send("It's your turn <@" + NewSpeaker.user.id + ">.").then(
+		Message => {
+			Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
+			{
+				StopSpeakingHelper(Message.guild, Message.member);
+			})
+		}).catch(console.log('failed to await for reaction on a new turn message.'));
 	}
 	else
 	{

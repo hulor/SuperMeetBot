@@ -5,6 +5,7 @@ class MeetingState
 	CurrentSpeaker = null;
 	VoiceChannelId = null;
 	TextChannelId = null;
+	StartMessageCollector = null;
 	IsCurrentlyActive = false;
 }
 
@@ -80,6 +81,12 @@ const Setters =
 		MeetingState.TextChannelId = TextId;
 	},
 
+	SetStartMessageCollector(Guild, Collector)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.StartMessageCollector = Collector;
+	},
+
 	StartMeeting(Guild, VoiceChannel, TextChannel)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
@@ -91,6 +98,8 @@ const Setters =
 	StopMeeting(Guild)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
+		if (MeetingState.StartMessageCollector)
+			MeetingState.StartMessageCollector.stop();
 		MeetingState.VoiceChannelId = null;
 		MeetingState.TextChannelId = null;
 		MeetingState.IsCurrentlyActive = false;
