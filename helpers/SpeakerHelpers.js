@@ -19,19 +19,25 @@ const DisplaySpeakerList = (Guild) =>
 	return (text);
 };
 
-const AddSpeakerHelper = (Message, Speaker) =>
+const AddSpeakerHelper = (Guild, Speaker) =>
+{
+	Setters.Add(Guild, Speaker);
+	if (Speaker == Getters.GetCurrentSpeaker(Guild))
+		Speaker.voice.setMute(false);
+}
+
+const AddSpeakerOnMessageHelper = (Message, Speaker) =>
 {
 	if (!Speaker)
 		Speaker = Message.member;
 	Message.react('✔️').catch(()=> Message.error("Failed to react"));
 	const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
-	Message.awaitReactions(ReactionFilter, {max:1}).then(collected =>
+	// timeout set at 1h, max 1 reaction.
+	Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
 	{
 		StopSpeakingHelper(Message.guild, Message.member);
-	})
-	Setters.Add(Message.guild, Speaker);
-	if (Speaker == Getters.GetCurrentSpeaker(Message.guild))
-		Speaker.voice.setMute(false);
+	});
+	AddSpeakerHelper(Message.guild, Speaker);
 }
 
 const StopSpeakingHelper = (Guild, Speaker) =>
@@ -60,5 +66,6 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 module.exports = {
 	DisplaySpeakerList,
 	AddSpeakerHelper,
+	AddSpeakerOnMessageHelper,
 	StopSpeakingHelper,
 };

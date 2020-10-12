@@ -1,6 +1,6 @@
 const { CommandoClient } = require("discord.js-commando");
 const { Getters, Setters } = require("./state/SpeakerState.js");
-const { AddSpeakerHelper } = require("./helpers/SpeakerHelpers.js")
+const { AddSpeakerOnMessageHelper } = require("./helpers/SpeakerHelpers.js")
 const Path = require("path");
 
 const {
@@ -33,7 +33,7 @@ Client.on("message", message =>
 	{
 		if (message.content.includes(Emoji))
 		{
-			AddSpeakerHelper(message);
+			AddSpeakerOnMessageHelper(message);
 			break;
 		}
 	}

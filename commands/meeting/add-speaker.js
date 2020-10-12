@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
-const { AddSpeakerHelper } = require("../../helpers/SpeakerHelpers.js")
+const { AddSpeakerOnMessageHelper } = require("../../helpers/SpeakerHelpers.js")
 
 exports.default = class AddSpeaker extends Command
 {
@@ -30,6 +30,6 @@ exports.default = class AddSpeaker extends Command
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
 			return (Message.reply("There is no meeting going on. To create one please use ~start-meeting."));
-		AddSpeakerHelper(Message, Speaker);
+		AddSpeakerOnMessageHelper(Message, Speaker);
 	}
 };
