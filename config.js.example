@@ -4,4 +4,5 @@ module.exports = {
 	Token: '', // token
 	Owner: '', // the owner id (aka your ID)
 	EmojiSpeaker: ["🤲", "👐", "🙌", "🤞", "✌️", "🤟", "☝️", "👆", "✋", "🤚", "🖐️", "🖖", "👋", "🤙"], // a list of usable emoji to ask to speak
+    MaxBufferMessageCollector: 50, // max message collector you can handle (aka how many messages you will be able to react on to ask to speak)
 }

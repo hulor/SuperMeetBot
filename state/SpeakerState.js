@@ -1,11 +1,13 @@
+const { MaxBufferMessageCollector } = require("../config.js");
+
 class MeetingState
 {
 	Guild = null;
+	MessageCollectors = [];
 	NextSpeakers = [];
 	CurrentSpeaker = null;
 	VoiceChannelId = null;
 	TextChannelId = null;
-	StartMessageCollector = null;
 	IsCurrentlyActive = false;
 }
 
@@ -81,10 +83,15 @@ const Setters =
 		MeetingState.TextChannelId = TextId;
 	},
 
-	SetStartMessageCollector(Guild, Collector)
+	AddMessageCollector(Guild, Collector)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
-		MeetingState.StartMessageCollector = Collector;
+		if (MeetingState.MessageCollectors.length > MaxBufferMessageCollector)
+		{
+			const OldestCollector = MeetingState.MessageCollectors.shift();
+			OldestCollector.stop();
+		}
+		MeetingState.MessageCollectors.push(Collector);
 	},
 
 	StartMeeting(Guild, VoiceChannel, TextChannel)
@@ -98,8 +105,8 @@ const Setters =
 	StopMeeting(Guild)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
-		if (MeetingState.StartMessageCollector)
-			MeetingState.StartMessageCollector.stop();
+		for (const Collector of MeetingState.MessageCollectors)
+			Collector.stop();
 		MeetingState.VoiceChannelId = null;
 		MeetingState.TextChannelId = null;
 		MeetingState.IsCurrentlyActive = false;

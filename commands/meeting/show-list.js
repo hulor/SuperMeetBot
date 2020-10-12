@@ -1,5 +1,5 @@
 const { Command } = require('discord.js-commando');
-const { DisplaySpeakerList } = require('../../helpers/SpeakerHelpers.js');
+const { DisplaySpeakerList, CreateMessageCollector } = require('../../helpers/SpeakerHelpers.js');
 const { Getters } = require('../../state/SpeakerState.js')
 
 class ShowList extends Command
@@ -22,7 +22,7 @@ class ShowList extends Command
 		Message.delete();
 		if (Getters.IsMeetingActive(Message.guild) == false)
 			return (Message.reply("There is no meeting going on. To create one please use ~start-meeting."));
-		return (Message.reply(DisplaySpeakerList(Message.guild)));
+		return (Message.reply(DisplaySpeakerList(Message.guild)).then(CreateMessageCollector).catch(() => console.log('failed to await for show-list reaction.')));
 	}
 };
 

@@ -19,12 +19,33 @@ const DisplaySpeakerList = (Guild) =>
 	return (text);
 };
 
+const CreateMessageCollector = (Message) =>
+{
+	const Filter = (reaction, user) => true;
+	const Collector = Message.createReactionCollector(Filter, {});
+	Collector.options.dispose = true;
+	Collector.on('collect', (reaction, user) => { AddSpeakerHelper(reaction.message.guild, reaction.message.guild.member(user)); }); // on receive a reaction
+	Collector.on('remove', (reaction, user) => { StopSpeakingHelper(reaction.message.guild, reaction.message.guild.member(user)); }); // on remove a reaction
+	Setters.AddMessageCollector(Message.guild, Collector);
+}
+
 const AddSpeakerHelper = (Guild, Speaker) =>
 {
 	Setters.Add(Guild, Speaker);
 	if (Speaker == Getters.GetCurrentSpeaker(Guild))
+	{
 		Speaker.voice.setMute(false);
-}
+		const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
+		// timeout set at 1h, max 1 reaction.
+		Getters.GetTextChannel(Guild).send("You can speak now <@" + Speaker.user.id + ">.").then(
+		Message => {
+			Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
+			{
+				StopSpeakingHelper(Message.guild, Message.member);
+			})
+		}).catch(() => console.log('failed to await for reaction on a new turn message.'));
+	}
+};
 
 const AddSpeakerOnMessageHelper = (Message, Speaker) =>
 {
@@ -38,13 +59,13 @@ const AddSpeakerOnMessageHelper = (Message, Speaker) =>
 		StopSpeakingHelper(Message.guild, Message.member);
 	});
 	AddSpeakerHelper(Message.guild, Speaker);
-}
+};
 
 const SpeakerIsWaiting = (Guild, Speaker) =>
 {
 	const AllSpeakers = Getters.GetAllSpeakers(Guild);
 	return (AllSpeakers.indexOf(Speaker) != -1);
-}
+};
 
 const StopSpeakingHelper = (Guild, Speaker) =>
 {
@@ -74,16 +95,17 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 			{
 				StopSpeakingHelper(Message.guild, Message.member);
 			})
-		}).catch(console.log('failed to await for reaction on a new turn message.'));
+		}).catch(() => console.log('failed to await for reaction on a new turn message.'));
 	}
 	else
 	{
-		Getters.GetTextChannel(Guild).send("No one wants to talk? You can ask to talk with ~AddSpeaker or raising your hand.");
+		Getters.GetTextChannel(Guild).send("No one wants to talk? You can ask to talk with ~AddSpeaker or raising your hand.").then(CreateMessageCollector).catch(() => console.log('failed to await on no-one want to talk.'));
 	}
-}
+};
 
 module.exports = {
 	DisplaySpeakerList,
+	CreateMessageCollector,
 	SpeakerIsWaiting,
 	AddSpeakerHelper,
 	AddSpeakerOnMessageHelper,
