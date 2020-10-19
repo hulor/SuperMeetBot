@@ -6,11 +6,11 @@ exports.default = class Clear extends Command
 	constructor(Client)
 	{
 		super(Client, {
-			name: "clear",
+			name: "clear-state",
 			group: "meeting",
-			memberName: "clear",
+			memberName: "clear-state",
 			description: "Clear meeting state in case of trouble.",
-			examples: ["~clear"],
+			examples: ["~clear-state"],
 			guildOnly: true,
 		});
 	}
