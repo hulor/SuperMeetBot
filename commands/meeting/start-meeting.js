@@ -39,7 +39,7 @@ exports.default = class StartMeeting extends Command
 		if (TextChannel.type !== "text")
 			return (Message.reply("Error, selected text channel " + VoiceChannel.name + " is not a text channel."));
 		Message.delete();
-		Setters.StartMeeting(Message.guild, VoiceChannel, TextChannel);
+		Setters.StartMeeting(Message.guild, VoiceChannel, TextChannel, Message.member);
 		VoiceChannel.join();
 		const CurrentSpeaker = Getters.GetCurrentSpeaker(Message.guild);
 		for (const Member of VoiceChannel.members.array())

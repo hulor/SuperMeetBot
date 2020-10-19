@@ -5,6 +5,7 @@ class MeetingState
 	Guild = null;
 	MessageCollectors = [];
 	NextSpeakers = [];
+	MC = null;
 	CurrentSpeaker = null;
 	VoiceChannelId = null;
 	TextChannelId = null;
@@ -94,9 +95,11 @@ const Setters =
 		MeetingState.MessageCollectors.push(Collector);
 	},
 
-	StartMeeting(Guild, VoiceChannel, TextChannel)
+	StartMeeting(Guild, VoiceChannel, TextChannel, User)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.MC = User;
+		MeetingState.CurrentSpeaker = User;
 		MeetingState.VoiceChannelId = VoiceChannel;
 		MeetingState.TextChannelId = TextChannel;
 		MeetingState.IsCurrentlyActive = true;
@@ -119,6 +122,12 @@ const Getters =
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		return MeetingState.CurrentSpeaker;
+	},
+
+	GetMC(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		return (MeetingState.MC);
 	},
 
 	GetAllSpeakers(Guild)

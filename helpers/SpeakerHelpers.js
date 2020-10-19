@@ -100,6 +100,19 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 	else
 	{
 		Getters.GetTextChannel(Guild).send("No one wants to talk? You can ask to talk with ~AddSpeaker or raising your hand.").then(CreateMessageCollector).catch(() => console.log('failed to await on no-one want to talk.'));
+		const MC = Getters.GetMC(Guild);
+		if (MC != null)
+		{
+			Getters.GetTextChannel(Guild).send("MC, you have the mic <@" + Speaker.user.id + ">.").then(
+			Message => {
+				Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
+				{
+					StopSpeakingHelper(Message.guild, MC);
+				})
+			}).catch(() => console.log('failed to await for reaction on a new turn message.'));
+			Setters.Add(Guild, MC);
+			MC.voice.setMute(false);
+		}
 	}
 };
 
