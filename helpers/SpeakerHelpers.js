@@ -4,7 +4,16 @@ const DisplaySpeakerList = (Guild) =>
 {
 	let text = '';
 
-	text = "Speaker list of " + Getters.GetVoiceChannel(Guild).name + "\n";
+	text = "Speaker list of " + Getters.GetVoiceChannel(Guild).name;
+	if (Getters.IsMeetingActive(Guild) == false &&
+		Getters.IsMeetingActiveNoPause(Guild) == true)
+	{
+		text += " (paused).\n";
+	}
+	else
+	{
+		text += ".\n";
+	}
 	// we don't have a current speaker so we won't have next speaker too.
 	if (Getters.GetCurrentSpeaker(Guild) == null)
 	{

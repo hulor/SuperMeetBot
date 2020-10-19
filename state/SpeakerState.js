@@ -10,6 +10,7 @@ class MeetingState
 	VoiceChannelId = null;
 	TextChannelId = null;
 	IsCurrentlyActive = false;
+	IsPaused = false;
 }
 
 const MeetingStates = [];
@@ -114,6 +115,18 @@ const Setters =
 		MeetingState.TextChannelId = null;
 		MeetingState.IsCurrentlyActive = false;
 	},
+
+	PauseMeeting(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.IsPaused = true;
+	},
+
+	ResumeMeeting(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.IsPaused = false;
+	}
 }
 
 const Getters =
@@ -149,6 +162,12 @@ const Getters =
 	},
 
 	IsMeetingActive(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		return MeetingState.IsCurrentlyActive && MeetingState.IsPaused == false;
+	},
+
+	IsMeetingActiveNoPause(Guild)
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		return MeetingState.IsCurrentlyActive;

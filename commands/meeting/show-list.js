@@ -20,7 +20,7 @@ class ShowList extends Command
 	run(Message)
 	{
 		Message.delete();
-		if (Getters.IsMeetingActive(Message.guild) == false)
+		if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
 			return (Message.reply("There is no meeting going on. To create one please use ~start-meeting."));
 		return (Message.reply(DisplaySpeakerList(Message.guild)).then(CreateMessageCollector).catch(() => console.log('failed to await for show-list reaction.')));
 	}
