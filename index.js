@@ -39,5 +39,22 @@ Client.on("message", message =>
 	}
 });
 
+Client.on("voiceStateUpdate", (OldState, NewState) =>
+{
+	if (OldState == NewState)
+		return ;
+	if (Getters.IsMeetingActive(NewState.guild) == false)
+		return;
+	if (NewState.channel != null &&
+		NewState.channel == Getters.GetVoiceChannel(NewState.guild))
+	{
+		if (NewState.member != Getters.GetCurrentSpeaker(NewState.guild) &&
+			NewState.mute == false)
+		{
+			NewState.setMute(true);
+		}
+	}
+})
+
 
 Client.login(Token);
