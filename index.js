@@ -31,7 +31,7 @@ Client.on("message", message =>
 
 	for (const Emoji of EmojiSpeaker)
 	{
-		if (message.content.includes(Emoji))
+		if (message.content === Emoji)
 		{
 			AddSpeakerOnMessageHelper(message);
 			break;
