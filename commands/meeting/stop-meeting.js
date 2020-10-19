@@ -24,7 +24,7 @@ exports.default = class StopMeeting extends Command
 		});
 	}
 
-	run(Message)
+	run(Message, Force)
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
 			return (Message.reply("There is no meeting to stop."));
