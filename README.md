@@ -6,9 +6,22 @@ Available commands:
 * **stop-meeting**: Stop an ongoing meeting. Usage: `~stop-meeting`
 * **add-speaker**: Add a new speaker to next speaker list, if there is no user provided, the author will be used. Usage: `~add-speaker [User]`
 * **over-speaking**: Call it when you have finished to talk. Usage: `~over-speaking`
+* **set-timer**: set a max duration for speaking. Userage: `~set-timer hh:mm:ss`
+* **remaining-time**: ask how long the current speaker can still talk. Usage: `~remaining-time`
 * **show-list**: Show all next speakers. Usage: `~show-list`
 * **clear**: Clear meeting state in case of trouble. Usage: `~clear`
 * **help**: Show all command available. Usage `~help`
+
+## Dependencies
+* NodeJs
+* npm
+Packages:
+* discord.js
+* discord.js-commando
+
+## Installation
+Clone the repository anywhere you want, then go at the root of the repository then proceed by a `npm install`. This should deploy any module dependencies from the bot.
+Once this is done, you can boot the bot by simply use `node .`.
 
 ## Usage
 
