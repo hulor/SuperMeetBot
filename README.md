@@ -15,6 +15,7 @@ Available commands:
 ## Dependencies
 * NodeJs
 * npm
+
 Packages:
 * discord.js
 * discord.js-commando
