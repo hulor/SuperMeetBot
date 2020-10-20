@@ -53,6 +53,7 @@ const UnmuteSpeakerHelper = (Guild, Speaker) =>
 		Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration / 2, Guild, "You're half way <@" + Speaker.user.id + ">."));
 	}
 	Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration - 60000, Guild, "Last minute <@" + Speaker.user.id + ">."));
+	Setters.SetSpeakStartTime(Guild, Date.now());
 	Speaker.voice.setMute(false);
 }
 
@@ -147,6 +148,7 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 				})
 			}).catch(() => console.log('failed to await for reaction on a new turn message.'));
 			Setters.Add(Guild, MC);
+			Setters.SetSpeakStartTime(Guild, null);
 			MC.voice.setMute(false);
 		}
 	}

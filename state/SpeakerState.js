@@ -8,6 +8,7 @@ class MeetingState
 	NextSpeakers = [];
 	MC = null;
 	CurrentSpeaker = null;
+	StartSpeaking = new Date();
 	VoiceChannelId = null;
 	TextChannelId = null;
 	SpeakDuration = 0;
@@ -89,6 +90,12 @@ const Setters =
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		MeetingState.TextChannelId = TextId;
+	},
+
+	SetSpeakStartTime(Guild, Date)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.StartSpeaking = Date;
 	},
 
 	SetSpeakDuration(Guild, Duration)
@@ -179,6 +186,12 @@ const Getters =
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		return MeetingState.TextChannelId;
+	},
+
+	GetSpeakStartTime(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		return MeetingState.StartSpeaking;
 	},
 
 	GetSpeakDuration(Guild)
