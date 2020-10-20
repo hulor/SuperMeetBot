@@ -4,11 +4,13 @@ class MeetingState
 {
 	Guild = null;
 	MessageCollectors = [];
+	MessageTimers = [];
 	NextSpeakers = [];
 	MC = null;
 	CurrentSpeaker = null;
 	VoiceChannelId = null;
 	TextChannelId = null;
+	SpeakDuration = 0;
 	IsCurrentlyActive = false;
 	IsPaused = false;
 }
@@ -67,6 +69,10 @@ const Setters =
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		MeetingState.remove(MeetingState);
 		MeetingState.NextSpeakers = [];
+		for (const Collector of MeetingState.MessageCollectors)
+			Collector.stop();
+		for (const Timer of MeetingState.MessageTimers)
+			clearTimeout(Timer);
 		CurrentSpeaker = null;
 		VoiceChannelId = null;
 		TextChannelId = null;
@@ -83,6 +89,18 @@ const Setters =
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		MeetingState.TextChannelId = TextId;
+	},
+
+	SetSpeakDuration(Guild, Duration)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.SpeakDuration = Duration;
+	},
+
+	AddMessageTimer(Guild, Timer)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		MeetingState.MessageTimers.push(Timer);
 	},
 
 	AddMessageCollector(Guild, Collector)
@@ -111,6 +129,8 @@ const Setters =
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		for (const Collector of MeetingState.MessageCollectors)
 			Collector.stop();
+		for (const Timer of MeetingState.MessageTimers)
+			clearTimeout(Timer);
 		MeetingState.VoiceChannelId = null;
 		MeetingState.TextChannelId = null;
 		MeetingState.IsCurrentlyActive = false;
@@ -159,6 +179,18 @@ const Getters =
 	{
 		const MeetingState = FindOrCreateMeetingState(Guild);
 		return MeetingState.TextChannelId;
+	},
+
+	GetSpeakDuration(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		return MeetingState.SpeakDuration;
+	},
+	
+	GetAllMessageTimers(Guild)
+	{
+		const MeetingState = FindOrCreateMeetingState(Guild);
+		return MeetingState.MessageTimers;
 	},
 
 	IsMeetingActive(Guild)

@@ -38,12 +38,40 @@ const CreateMessageCollector = (Message) =>
 	Setters.AddMessageCollector(Message.guild, Collector);
 }
 
+const SendMessageToGuild = (Guild, Message) =>
+{
+	Getters.GetTextChannel(Guild).send(Message);
+}
+
+const UnmuteSpeakerHelper = (Guild, Speaker) =>
+{
+	const SpeakDuration = Getters.GetSpeakDuration(Guild);
+
+	// to avoid redundant message
+	if (SpeakDuration / 2 != SpeakDuration - 60000)
+	{
+		Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration / 2, Guild, "You're half way <@" + Speaker.user.id + ">."));
+	}
+	Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration - 60000, Guild, "Last minute <@" + Speaker.user.id + ">."));
+	Speaker.voice.setMute(false);
+}
+
+const MuteSpeakerHelper = (Guild, Speaker) =>
+{
+	for (const Timer of Getters.GetAllMessageTimers(Guild))
+	{
+		clearTimeout(Timer);
+	}
+	if (Speaker.voice != null)
+		Speaker.voice.setMute(true);
+}
+
 const AddSpeakerHelper = (Guild, Speaker) =>
 {
 	Setters.Add(Guild, Speaker);
 	if (Speaker == Getters.GetCurrentSpeaker(Guild))
 	{
-		Speaker.voice.setMute(false);
+		UnmuteSpeakerHelper(Guild, Speaker);
 		const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
 		// timeout set at 1h, max 1 reaction.
 		Getters.GetTextChannel(Guild).send("You can speak now <@" + Speaker.user.id + ">.").then(
@@ -89,13 +117,12 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 		return;
 	}
 	// in case the previous talker has left the meeting.
-	if (PreviousTalker.voice != null)
-		PreviousTalker.voice.setMute(true);
+	MuteSpeakerHelper(Guild, PreviousTalker);
 
 	const NewSpeaker = Setters.PopNextSpeaker(Guild);
 	if (NewSpeaker != null)
 	{
-		NewSpeaker.voice.setMute(false);
+		UnmuteSpeakerHelper(Guild, Speaker);
 		const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
 		// timeout set at 1h, max 1 reaction.
 		Getters.GetTextChannel(Guild).send("It's your turn <@" + NewSpeaker.user.id + ">.").then(
