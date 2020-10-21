@@ -1,6 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
-const { BotGetters } = require('../../state/BotState.js');
+const { BotGetters, BotSetters } = require('../../state/BotState.js');
 const util = require('util');
 
 exports.default = class StopMeeting extends Command
@@ -42,6 +42,7 @@ exports.default = class StopMeeting extends Command
 		VoiceChannel.leave();
 		Message.delete();
 		Setters.StopMeeting(Message.guild);
+		BotSetters.SetVoiceConnexion(null);
 		return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("MeetingFinished"), VoiceChannel.name)));
 	}
 }

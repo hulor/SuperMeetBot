@@ -3,6 +3,7 @@ const BotState =
     LocalisationManager: null,
     Client: null,
     VoiceConnexion: null,
+	Lol: false,
 }
 
 const BotSetters =
@@ -21,6 +22,10 @@ const BotSetters =
     {
         BotState.VoiceConnexion = VoiceConnexion;
     },
+	SetLol(Lol)
+	{
+		BotState.Lol = Lol;
+	},
 }
 
 const BotGetters =
@@ -37,6 +42,10 @@ const BotGetters =
     {
         return (BotState.VoiceConnexion);
     },
+	GetLol()
+	{
+		return (BotState.Lol);
+	},
 }
 
 module.exports = { BotGetters, BotSetters }

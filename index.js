@@ -58,6 +58,8 @@ Client.on("voiceStateUpdate", (OldState, NewState) =>
 		return ;
 	if (Getters.IsMeetingActive(NewState.guild) == false)
 		return;
+	if (OldState.member.user.bot == true)
+		return ;
 	if (NewState.channel != null &&
 		NewState.channel == Getters.GetVoiceChannel(NewState.guild))
 	{

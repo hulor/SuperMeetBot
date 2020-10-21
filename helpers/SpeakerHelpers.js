@@ -61,6 +61,10 @@ const UnmuteSpeakerHelper = (Guild, Speaker) =>
 	}
 	Setters.SetSpeakStartTime(Guild, Date.now());
 	Speaker.voice.setMute(false);
+	const ytdl = require('ytdl-core');
+	const VoiceConnexion = BotGetters.GetVoiceConnexion();
+	if (VoiceConnexion != null && BotGetters.GetLol() ==  true)
+		VoiceConnexion.play(ytdl('https://www.youtube.com/watch?v=5qwDqUgFfBI', { filter: 'audioonly' }));
 }
 
 const MuteSpeakerHelper = (Guild, Speaker) =>

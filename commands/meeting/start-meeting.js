@@ -1,7 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
 const { CreateMessageCollector } = require("../../helpers/SpeakerHelpers.js")
-const { BotGetters } = require('../../state/BotState.js');
+const { BotGetters, BotSetters } = require('../../state/BotState.js');
 const util = require('util');
 
 exports.default = class StartMeeting extends Command
@@ -44,10 +44,12 @@ exports.default = class StartMeeting extends Command
 			return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("NoTextChan"), TextChannel.name)));
 		Message.delete();
 		Setters.StartMeeting(Message.guild, VoiceChannel, TextChannel, Message.member);
-		VoiceChannel.join();
+		VoiceChannel.join().then(connexion => BotSetters.SetVoiceConnexion(connexion));
 		const CurrentSpeaker = Getters.GetCurrentSpeaker(Message.guild);
 		for (const Member of VoiceChannel.members.array())
 		{
+			if (Member.user.bot == true)
+				continue;
 			if (CurrentSpeaker == null || Member != CurrentSpeaker)
 				Member.voice.setMute(true);
 		}
