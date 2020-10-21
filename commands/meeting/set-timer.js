@@ -28,8 +28,8 @@ exports.default = class SetTimer extends Command
 
 	run(Message, { Duration })
 	{
-		if (Getters.IsMeetingActive(Message.guild) == false)
-			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
+		//if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
+		//	return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
 		const TimeStr = Duration.split(':');
 		var Time = Math.abs(parseInt(TimeStr[TimeStr.length - 1]) * 1000); // seconds
 

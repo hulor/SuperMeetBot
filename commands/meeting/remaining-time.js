@@ -29,8 +29,10 @@ exports.default = class RemainingTime extends Command
 
 	run(Message, { Duration })
 	{
-		if (Getters.IsMeetingActive(Message.guild) == false)
+		if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
 			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
+		if (Getters.IsMeetingActive(Message.guild) == false)
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("PausedMeeting")));
 		if (Getters.GetSpeakStartTime(Message.guild) == null)
 			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoTalker")));
 		if (Getters.GetSpeakDuration(Message.guild) <= 0)

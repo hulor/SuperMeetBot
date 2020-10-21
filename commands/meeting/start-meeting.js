@@ -34,8 +34,10 @@ exports.default = class StartMeeting extends Command
 
 	run(Message, { VoiceChannel, TextChannel })
 	{
-		if (Getters.IsMeetingActive(Message.guild))
+		if (Getters.IsMeetingActiveNoPause(Message.guild))
 			return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("MeetingAlreadyExist"), Getters.GetVoiceChannel(Message.guild).name)));
+		if (Getters.IsMeetingActive(Message.guild))
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("PausedMeeting")));
 		if (VoiceChannel.type !== "voice")
 			return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("NoVoiceChan"), VoiceChannel.name)));
 		if (TextChannel.type !== "text")

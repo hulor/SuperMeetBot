@@ -28,7 +28,7 @@ exports.default = class StopMeeting extends Command
 
 	run(Message, Force)
 	{
-		if (Getters.IsMeetingActive(Message.guild) == false)
+		if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
 			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
 		if (Getters.GetAllSpeakers(Message.guild).length != 0 && Force == false)
 		{

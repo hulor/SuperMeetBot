@@ -29,8 +29,10 @@ exports.default = class AddSpeaker extends Command
 
 	run(Message, { Speaker })
 	{
-		if (Getters.IsMeetingActive(Message.guild) == false)
+		if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
 			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
+		if (Getters.IsMeetingActive(Message.guild) == false)
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("PausedMeeting")));
 		AddSpeakerOnMessageHelper(Message, Speaker);
 	}
 };

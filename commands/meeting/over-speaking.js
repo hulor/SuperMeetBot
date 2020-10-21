@@ -20,8 +20,10 @@ exports.default = class OverSpeaking extends Command
 
 	run(Message)
 	{
-		if (Getters.IsMeetingActive(Message.guild) == false)
+		if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
 			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
+		if (Getters.IsMeetingActive(Message.guild) == false)
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("PausedMeeting")));
 
 		Message.react('✔️').catch(()=> Message.error("Failed to react"));
 		return (StopSpeakingHelper(Message.guild, Message.member));

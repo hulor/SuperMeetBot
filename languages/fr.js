@@ -1,6 +1,7 @@
 const LanguageTable = new Map([
     ["Test", "c'est en francais."],
     ["NoMeeting", "Aucune reunion en cours. Vous pouvez en creer une avec ~start-meeting."],
+    ["PausedMeeting", "La reunion est actuellement en pause."],
     ["MeetingAlreadyExist", "Il y a deja une reunion qui a lieu dans %s."],
     ["MeetingStart", "Debut de la reunion dans %s."],
     ["NoVoiceChan", "Erreur, selectionnez un channel vocal, %s n'est pas un channel vocal."],
