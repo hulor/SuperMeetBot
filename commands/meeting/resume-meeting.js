@@ -1,8 +1,9 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
-const { CreateMessageCollector } = require("../../helpers/SpeakerHelpers.js")
+const { CreateMessageCollector, DisplaySpeakerList } = require("../../helpers/SpeakerHelpers.js")
+const { BotGetters } = require('../../state/BotState.js');
 
-exports.default = class StartMeeting extends Command
+exports.default = class ResumeMeeting extends Command
 {
 	constructor(Client)
 	{
@@ -23,10 +24,14 @@ exports.default = class StartMeeting extends Command
 	run(Message, { VoiceChannel, TextChannel })
 	{
 		if (Getters.IsMeetingActiveNoPause(Message.guild) == false)
-			return (Message.reply(`There is no meeting going on.`));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
+		Message.react('✔️').catch(()=> Message.error("Failed to react"));
 		Setters.ResumeMeeting(Message.guild);
-		for (const Member of Getters.GetVoiceChannel().members.array())
+		const CurrentSpeaker = Getters.GetCurrentSpeaker(Message.guild);
+		for (const Member of Getters.GetVoiceChannel(Message.guild).members.array())
 		{
+			if (Member.user.bot == true)
+				continue;
 			if (CurrentSpeaker == null || Member != CurrentSpeaker)
 				Member.voice.setMute(true);
 		}
