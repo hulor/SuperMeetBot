@@ -4,12 +4,14 @@ A simple discord bot to manage vocal meeting. You can create a meeting by giving
 Available commands:
 * **start-meeting**: Start a new meeting in a voice channel. Usage: `~start-meeting VoiceChannel #TextChannel`
 * **stop-meeting**: Stop an ongoing meeting. Usage: `~stop-meeting`
+* **pause-meeting**: Put a hold on the meeting. Usage: `~pause-meeting`
+* **resume-meeting**: Continue previously paused meeting. Usage: `~resume-meeting`
 * **add-speaker**: Add a new speaker to next speaker list, if there is no user provided, the author will be used. Usage: `~add-speaker [User]`
 * **over-speaking**: Call it when you have finished to talk. Usage: `~over-speaking`
 * **set-timer**: set a max duration for speaking. Userage: `~set-timer hh:mm:ss`
 * **remaining-time**: ask how long the current speaker can still talk. Usage: `~remaining-time`
 * **show-list**: Show all next speakers. Usage: `~show-list`
-* **clear**: Clear meeting state in case of trouble. Usage: `~clear`
+* **clear-state**: Clear meeting state in case of trouble. Usage: `~clear`
 * **help**: Show all command available. Usage `~help`
 
 ## Dependencies
@@ -38,6 +40,9 @@ If you use any "over" command or reaction before you have talked you will be rem
 
 ### Finish it
 When your meeting is over you can stop everything with the command `~stop-meeting`. Don't worry if you send it before it was really finished, if the waiting list is not empty, the bot will let you know.
+
+## Localisation
+The bot has a localisation system which will load all js file in the root folder `languages/`. This way you can easily duplicate one of the two existing translation (French and English) to make you own language for the bot.
 
 ## Last words
 Feel free to clone, add, change anything in this bot. In case of trouble using it, please let me know.
