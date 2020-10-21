@@ -1,6 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
 const { StopSpeakingHelper } = require('../../helpers/SpeakerHelpers.js');
+const { BotGetters } = require('../../state/BotState.js');
 
 exports.default = class OverSpeaking extends Command
 {
@@ -20,7 +21,7 @@ exports.default = class OverSpeaking extends Command
 	run(Message)
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
-			return (Message.reply("There is no meeting."));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
 
 		Message.react('✔️').catch(()=> Message.error("Failed to react"));
 		return (StopSpeakingHelper(Message.guild, Message.member));

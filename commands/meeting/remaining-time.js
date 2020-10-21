@@ -1,5 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
+const { BotGetters } = require('../../state/BotState.js');
+const util = require('util');
 
 exports.default = class RemainingTime extends Command
 {
@@ -28,14 +30,16 @@ exports.default = class RemainingTime extends Command
 	run(Message, { Duration })
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
-			return (Message.reply("There is no meeting going on. To create one please use ~start-meeting."));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
 		if (Getters.GetSpeakStartTime(Message.guild) == null)
-			return (Message.reply("There is no one talking right now."));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoTalker")));
+		if (Getters.GetSpeakDuration(Message.guild) <= 0)
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoDuration")));
 		const TimeDelta = Date.now() - Getters.GetSpeakStartTime(Message.guild);
 		const MillisecondDelta = Getters.GetSpeakDuration(Message.guild) - TimeDelta;
 		if (MillisecondDelta <= 0)
 		{
-			return (Getters.GetTextChannel(Message.guild).send("<@" + Getters.GetCurrentSpeaker(Message.guild) + "> has exceed the speak maximal duration."));
+			return (Getters.GetTextChannel(Message.guild).send(util.format(BotGetters.GetLocalisationManager().getValue("ExceedDuration"), Getters.GetCurrentSpeaker(Message.guild))));
 		}
 		const Hours = Math.floor(MillisecondDelta / 3600000);
 		const Minutes = Math.floor((MillisecondDelta - (Hours * 3600000)) / 60000);
@@ -52,6 +56,6 @@ exports.default = class RemainingTime extends Command
 			ResultString += Minutes + "m";
 		}
 		ResultString += Seconds + "s";
-		return (Getters.GetTextChannel(Message.guild).send("<@" + Getters.GetCurrentSpeaker(Message.guild) + "> still has " + ResultString));
+		return (Getters.GetTextChannel(Message.guild).send(util.format(BotGetters.GetLocalisationManager().getValue("StillDuration"), Getters.GetCurrentSpeaker(Message.guild), ResultString)));
 	}
 };

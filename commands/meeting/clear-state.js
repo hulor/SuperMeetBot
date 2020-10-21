@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { Setters } = require('../../state/SpeakerState.js');
+const { BotGetters } = require('../../state/BotState.js');
 
 exports.default = class Clear extends Command
 {
@@ -18,6 +19,6 @@ exports.default = class Clear extends Command
 	run(Message)
 	{
 		Setters.Clear(Message.guild);
-		Message.reply("Cleared.");
+		Message.reply(BotGetters.GetLocalisationManager().getValue("Cleared."));
 	}
 }

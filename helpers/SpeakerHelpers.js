@@ -1,14 +1,15 @@
 const { Getters, Setters } = require('../state/SpeakerState.js');
+const { BotGetters } = require('../state/BotState.js');
+const util = require('util');
 
 const DisplaySpeakerList = (Guild) =>
 {
-	let text = '';
+	let text = util.format(BotGetters.GetLocalisationManager().getValue("SpeakerList"), Getters.GetVoiceChannel(Guild).name);
 
-	text = "Speaker list of " + Getters.GetVoiceChannel(Guild).name;
 	if (Getters.IsMeetingActive(Guild) == false &&
 		Getters.IsMeetingActiveNoPause(Guild) == true)
 	{
-		text += " (paused).\n";
+		text += util.format(" %s.\n", BotGetters.GetLocalisationManager().getValue("Paused"));
 	}
 	else
 	{
@@ -17,11 +18,11 @@ const DisplaySpeakerList = (Guild) =>
 	// we don't have a current speaker so we won't have next speaker too.
 	if (Getters.GetCurrentSpeaker(Guild) == null)
 	{
-		text += "No speaker for the moment.";
+		text += BotGetters.GetLocalisationManager().getValue("NoTalker");
 		return (text);
 	}
-	text += "Currently speaking: <@" + Getters.GetCurrentSpeaker(Guild).user.id + ">\n";
-	text += "Next speakers :\n";
+	text += util.format(BotGetters.GetLocalisationManager().getValue("CurrentSpeaker"), Getters.GetCurrentSpeaker(Guild).user.id);
+	text += BotGetters.GetLocalisationManager().getValue("NextSpeakers");
 
 	for (const Speaker of Getters.GetAllSpeakers(Guild))
 		text += "<@" + Speaker.user.id + ">\n";
@@ -47,12 +48,17 @@ const UnmuteSpeakerHelper = (Guild, Speaker) =>
 {
 	const SpeakDuration = Getters.GetSpeakDuration(Guild);
 
-	// to avoid redundant message
-	if (SpeakDuration / 2 != SpeakDuration - 60000)
+	if (SpeakDuration > 0)
 	{
-		Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration / 2, Guild, "You're half way <@" + Speaker.user.id + ">."));
+		// to avoid redundant message
+		if (SpeakDuration / 2 != SpeakDuration - 60000)
+		{
+			Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration / 2, Guild,
+													  util.format(BotGetters.GetLocalisationManager().getValue("HalfDuration"), Speaker.user.id)));
+		}
+		Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration - 60000, Guild,
+													  util.format(BotGetters.GetLocalisationManager().getValue("LastMinute"), Speaker.user.id)));
 	}
-	Setters.AddMessageTimer(Guild, setTimeout(SendMessageToGuild, SpeakDuration - 60000, Guild, "Last minute <@" + Speaker.user.id + ">."));
 	Setters.SetSpeakStartTime(Guild, Date.now());
 	Speaker.voice.setMute(false);
 }
@@ -75,7 +81,7 @@ const AddSpeakerHelper = (Guild, Speaker) =>
 		UnmuteSpeakerHelper(Guild, Speaker);
 		const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
 		// timeout set at 1h, max 1 reaction.
-		Getters.GetTextChannel(Guild).send("You can speak now <@" + Speaker.user.id + ">.").then(
+		Getters.GetTextChannel(Guild).send(util.format(BotGetters.GetLocalisationManager().getValue("CanSpeak"), Speaker.user.id)).then(
 		Message => {
 			Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
 			{
@@ -126,7 +132,7 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 		UnmuteSpeakerHelper(Guild, Speaker);
 		const ReactionFilter = (reaction, user) => { return (user.id == Speaker.id)};
 		// timeout set at 1h, max 1 reaction.
-		Getters.GetTextChannel(Guild).send("It's your turn <@" + NewSpeaker.user.id + ">.").then(
+		Getters.GetTextChannel(Guild).send(util.format(BotGetters.GetLocalisationManager().getValue("YourTurn"), Speaker.user.id)).then(
 		Message => {
 			Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
 			{
@@ -136,11 +142,11 @@ const StopSpeakingHelper = (Guild, Speaker) =>
 	}
 	else
 	{
-		Getters.GetTextChannel(Guild).send("No one wants to talk? You can ask to talk with ~AddSpeaker or raising your hand.").then(CreateMessageCollector).catch(() => console.log('failed to await on no-one want to talk.'));
+		Getters.GetTextChannel(Guild).send(BotGetters.GetLocalisationManager().getValue("NoWantTalk")).then(CreateMessageCollector).catch(() => console.log('failed to await on no-one want to talk.'));
 		const MC = Getters.GetMC(Guild);
 		if (MC != null)
 		{
-			Getters.GetTextChannel(Guild).send("MC, you have the mic <@" + Speaker.user.id + ">.").then(
+			Getters.GetTextChannel(Guild).send(util.format(BotGetters.GetLocalisationManager().getValue("MCHasMic"), Speaker.user.id)).then(
 			Message => {
 				Message.awaitReactions(ReactionFilter, {max:1, time:3600000}).then(collected =>
 				{

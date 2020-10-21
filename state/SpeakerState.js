@@ -8,7 +8,7 @@ class MeetingState
 	NextSpeakers = [];
 	MC = null;
 	CurrentSpeaker = null;
-	StartSpeaking = new Date();
+	StartSpeaking = null;
 	VoiceChannelId = null;
 	TextChannelId = null;
 	SpeakDuration = 0;

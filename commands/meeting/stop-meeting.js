@@ -1,5 +1,7 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
+const { BotGetters } = require('../../state/BotState.js');
+const util = require('util');
 
 exports.default = class StopMeeting extends Command
 {
@@ -27,10 +29,10 @@ exports.default = class StopMeeting extends Command
 	run(Message, Force)
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
-			return (Message.reply("There is no meeting to stop."));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
 		if (Getters.GetAllSpeakers(Message.guild).length != 0 && Force == false)
 		{
-			return (Message.reply("This meeting is not over yet. There is still people waiting to talk."));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("MeetingNotFinished")));
 		}
 		const VoiceChannel = Getters.GetVoiceChannel(Message.guild);
 		for (const Member of VoiceChannel.members.array())
@@ -40,6 +42,6 @@ exports.default = class StopMeeting extends Command
 		VoiceChannel.leave();
 		Message.delete();
 		Setters.StopMeeting(Message.guild);
-		return (Message.reply(`Stopped a meeting in ${VoiceChannel.name}.`));
+		return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("MeetingFinished"), VoiceChannel.name)));
 	}
 }

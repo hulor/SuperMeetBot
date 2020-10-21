@@ -1,5 +1,6 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
+const { BotGetters } = require('../../state/BotState.js');
 
 exports.default = class SetTimer extends Command
 {
@@ -28,7 +29,7 @@ exports.default = class SetTimer extends Command
 	run(Message, { Duration })
 	{
 		if (Getters.IsMeetingActive(Message.guild) == false)
-			return (Message.reply("There is no meeting going on. To create one please use ~start-meeting."));
+			return (Message.reply(BotGetters.GetLocalisationManager().getValue("NoMeeting")));
 		const TimeStr = Duration.split(':');
 		var Time = Math.abs(parseInt(TimeStr[TimeStr.length - 1]) * 1000); // seconds
 

@@ -1,6 +1,8 @@
 const { Command } = require('discord.js-commando');
 const { Setters, Getters } = require('../../state/SpeakerState.js');
 const { CreateMessageCollector } = require("../../helpers/SpeakerHelpers.js")
+const { BotGetters } = require('../../state/BotState.js');
+const util = require('util');
 
 exports.default = class StartMeeting extends Command
 {
@@ -33,11 +35,11 @@ exports.default = class StartMeeting extends Command
 	run(Message, { VoiceChannel, TextChannel })
 	{
 		if (Getters.IsMeetingActive(Message.guild))
-			return (Message.reply(`There is already a meeting going on in ${Getters.GetVoiceChannel(Message.guild).name}.`));
+			return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("MeetingAlreadyExist"), Getters.GetVoiceChannel(Message.guild).name)));
 		if (VoiceChannel.type !== "voice")
-			return (Message.reply("Error, selected voice channel " + VoiceChannel.name + " is not a voice channel but a text one."));
+			return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("NoVoiceChan"), VoiceChannel.name)));
 		if (TextChannel.type !== "text")
-			return (Message.reply("Error, selected text channel " + VoiceChannel.name + " is not a text channel."));
+			return (Message.reply(util.format(BotGetters.GetLocalisationManager().getValue("NoTextChan"), TextChannel.name)));
 		Message.delete();
 		Setters.StartMeeting(Message.guild, VoiceChannel, TextChannel, Message.member);
 		VoiceChannel.join();
@@ -47,6 +49,6 @@ exports.default = class StartMeeting extends Command
 			if (CurrentSpeaker == null || Member != CurrentSpeaker)
 				Member.voice.setMute(true);
 		}
-		Getters.GetTextChannel(Message.guild).send(`Starting a meeting in ${VoiceChannel.name}.`).then(CreateMessageCollector).catch(() => console.log('failed to await for start meeting message.'));
+		Getters.GetTextChannel(Message.guild).send(util.format(BotGetters.GetLocalisationManager().getValue("MeetingStart"), TextChannel.name)).then(CreateMessageCollector).catch(() => console.log('failed to await for start meeting message.'));
 	}
 };
