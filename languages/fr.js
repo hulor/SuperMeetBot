@@ -1,0 +1,30 @@
+const LanguageTable = new Map([
+    ["Test", "c'est en francais."],
+    ["NoMeeting", "Aucune reunion en cours. Vous pouvez en creer une avec ~start-meeting."],
+    ["MeetingAlreadyExist", "Il y a deja une reunion qui a lieu dans %s."],
+    ["MeetingStart", "Debut de la reunion dans %s."],
+    ["NoVoiceChan", "Erreur, selectionnez un channel vocal, %s n'est pas un channel vocal."],
+    ["NoTextChan", "Erreur, selectionnez un channel textuel, %s n'est pas un channel textuel."],
+    ["MeetingNotFinished", "Cette reunion n'est pas terminee. Il y a encore des participants qui attendent leur tour."],
+    ["MeetingFinished", "Arret de la reunion dans %s."],
+    ["Cleared", "Nettoye"],
+    ["Paused", "(pause)"],
+    ["NoTalker", "Personne ne parle en ce moment."],
+    ["NoDuration", "Il n'y a pas de limite de parole."],
+    ["ExceedDuration", "<@%s> a depasse sa limite de parole."],
+    ["StillDuration", "<@%s> a encore %s"],
+    ["HalfDuration", "Vous etes a la moitie de votre tour <@%s>."],
+    ["LastMinute", "Derniere minute <@%s>."],
+    ["SpeakerList", "List des tours de parole %s"],
+    ["CurrentSpeaker", "Tour actuel : <@%s>.\n"],
+    ["NextSpeakers", "Prochains tours :\n"],
+    ["CanSpeak", "Vous pouvez parler maintenant <@%s>."],
+    ["YourTurn", "C'est votre tour <@%s>."],
+    ["NoWantTalk", "Personne ne veut parler? Vous pouvez demander votre tour avec ~AddSpeaker ou en levant votre main."],
+    ["MCHasMic", "MC, vous pouvez parler <@%s>."],
+    ["", ""],
+])
+
+module.exports = {
+    LanguageTable,
+}
